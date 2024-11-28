@@ -1,0 +1,32 @@
+services:
+  # Сервис для Django-приложения
+  web:
+    build: .
+    container_name: django_app
+    command: python manage.py runserver 0.0.0.0:8000  # Запуск Django
+    volumes:
+      - .:/app  # Монтируем текущую директорию в контейнер
+    ports:
+      - "8000:8000"  # Проброс порта для веб-приложения
+    depends_on:
+      - db  # Указываем зависимость от базы данных
+    environment:
+      - DEBUG=True
+      - DJANGO_SETTINGS_MODULE=test_codes_commanders.settings  # Указываем настройки Django
+
+  # Сервис для PostgreSQL
+  db:
+    image: postgres:15  # Используем официальный образ PostgreSQL
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: admin_postgres  # Имя пользователя PostgreSQL
+      POSTGRES_PASSWORD: 111111qwe  # Пароль пользователя PostgreSQL
+      POSTGRES_DB: users_and_orders  # Имя базы данных
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Персистентное хранилище данных
+    ports:
+      - "5432:5432"  # Проброс порта для базы данных
+
+# Персистентный том для хранения данных базы данных
+volumes:
+  postgres_data:
